@@ -9,6 +9,9 @@ contract StableSwapPool is Ownable {
     IERC20 public tokenA;
     IERC20 public tokenB;
     LPToken public lpToken;
+
+    uint256 public priceBefore;
+    uint256 public priceAfter;
     
     uint256 public reserveA;
     uint256 public reserveB;
@@ -63,7 +66,6 @@ contract StableSwapPool is Ownable {
     /** @dev 计算交易详情 */
     function getSwapDetails(uint256 amountIn, bool isAToB) 
         public 
-        view 
         returns (uint256 feeAmount, uint256 estimatedAmountOut, uint256 priceImpact) 
     {
         require(amountIn > 0, "Amount must be greater than zero");
@@ -81,8 +83,8 @@ contract StableSwapPool is Ownable {
         estimatedAmountOut = y - new_y;
 
         // 计算价格影响
-        uint256 priceBefore = y * 1e18 / x; // 交易前的价格
-        uint256 priceAfter = new_y * 1e18 / new_x; // 交易后的价格
+        priceBefore = y * 1e18 / x; // 交易前的价格
+        priceAfter = new_y * 1e18 / new_x; // 交易后的价格
         priceImpact = ((priceBefore - priceAfter) * 100) / priceBefore; // 百分比
     }
 
@@ -113,6 +115,28 @@ contract StableSwapPool is Ownable {
             reserveB += fee;
         }
     }
+
+    /** @dev 根据输入的代币数量计算对应的另一方代币数量以保持池子比例 */
+    function getPairedAmount(uint256 amountIn, bool isA) 
+        public 
+        view 
+        returns (uint256 pairedAmount) 
+    {
+        require(amountIn > 0, "Amount must be greater than zero");
+        require(totalLiquidity > 0, "Pool is empty, no ratio available");
+        
+        if (totalLiquidity == 0) {
+            return 0; 
+        }
+
+        if (isA) {
+            pairedAmount = (amountIn * reserveB) / reserveA;
+        } else {
+            pairedAmount = (amountIn * reserveA) / reserveB;
+        }
+    }
+
+
 
     function getReservesAndLiquidity() public view 
         returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_) 
