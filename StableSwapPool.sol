@@ -113,4 +113,14 @@ contract StableSwapPool is Ownable {
             reserveB += fee;
         }
     }
+
+    function getReservesAndLiquidity() public view 
+        returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_) 
+    {
+        reserveA_ = reserveA;
+        reserveB_ = reserveB;
+        totalLiquidity_ = totalLiquidity;
+    }
+
+
 }
