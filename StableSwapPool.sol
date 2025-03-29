@@ -10,9 +10,8 @@ contract StableSwapPool is Ownable {
     IERC20 public tokenB;
     LPToken public lpToken;
 
-    uint256 public priceBefore;
-    uint256 public priceAfter;
-
+    uint256 public priceCurrent;
+    
     uint256 public reserveA;
     uint256 public reserveB;
     uint256 public totalLiquidity;
@@ -22,11 +21,22 @@ contract StableSwapPool is Ownable {
     //监听事件
     event SwapExecuted(
         uint256 timestamp,
-        uint256 priceBefore,
-        uint256 priceAfter,
+        uint256 priceCurrent,
         bool isAToB,
+        uint256 reserveA,
+        uint256 reserveB,
         uint256 amountIn,
         uint256 amountOut
+    );
+
+    event SwapDetailed(
+        uint256 feeAmount,
+        uint256 amountAfterFee,
+        uint256 new_x,
+        uint256 new_y,
+        uint256 priceBefore,
+        uint256 priceAfter,
+        uint256 priceImpact
     );
 
     constructor(address _tokenA, address _tokenB, address _lpToken) Ownable(msg.sender) {
@@ -46,12 +56,13 @@ contract StableSwapPool is Ownable {
         uint256 lpAmount;
         if (totalLiquidity == 0) {
             lpAmount = (amountA + amountB) / 2;
+            priceCurrent=amountA/amountB;
         } else {
             lpAmount = (amountA * totalLiquidity) / reserveA;
         }
 
         lpToken.mint(msg.sender, lpAmount);
-
+        
         reserveA += amountA;
         reserveB += amountB;
         totalLiquidity += lpAmount;
@@ -71,18 +82,19 @@ contract StableSwapPool is Ownable {
         reserveA -= amountA;
         reserveB -= amountB;
         totalLiquidity -= lpAmount;
+        priceCurrent=amountA/amountB;
     }
 
     /** @dev 计算交易详情 */
-    function getSwapDetails(uint256 amountIn, bool isAToB)
-    public
-    returns (uint256 feeAmount, uint256 estimatedAmountOut, uint256 priceImpact)
+    function getSwapDetails(uint256 amountIn, bool isAToB) 
+        public
+        returns (uint256 feeAmount, uint256 estimatedAmountOut, uint256 priceImpact) 
     {
         require(amountIn > 0, "Amount must be greater than zero");
 
         uint256 x = isAToB ? reserveA : reserveB;
         uint256 y = isAToB ? reserveB : reserveA;
-
+        
         // 计算手续费
         feeAmount = (amountIn * FEE_RATE) / 10000;
         uint256 amountAfterFee = amountIn - feeAmount;
@@ -93,9 +105,10 @@ contract StableSwapPool is Ownable {
         estimatedAmountOut = y - new_y;
 
         // 计算价格影响
-        priceBefore = y * 1e18 / x; // 交易前的价格
-        priceAfter = new_y * 1e18 / new_x; // 交易后的价格
+        uint256 priceBefore = y * 1e18 / x; // 交易前的价格
+        uint256 priceAfter = new_y * 1e18 / new_x; // 交易后的价格
         priceImpact = ((priceBefore - priceAfter) * 100) / priceBefore; // 百分比
+        emit SwapDetailed(feeAmount,amountAfterFee,new_x,new_y,priceBefore,priceAfter,priceImpact);
     }
 
     /** @dev 兑换稳定币，支持滑点保护 */
@@ -124,21 +137,22 @@ contract StableSwapPool is Ownable {
         } else {
             reserveB += fee;
         }
+        priceCurrent=reserveA/reserveB;
 
-        emit SwapExecuted(block.timestamp,priceBefore,priceAfter, isAToB, amountIn, amountOut);
+        emit SwapExecuted(block.timestamp,priceCurrent, isAToB,reserveA,reserveB, amountIn, amountOut);
     }
 
     /** @dev 根据输入的代币数量计算对应的另一方代币数量以保持池子比例 */
-    function getPairedAmount(uint256 amountIn, bool isA)
-    public
-    view
-    returns (uint256 pairedAmount)
+    function getPairedAmount(uint256 amountIn, bool isA) 
+        public 
+        view 
+        returns (uint256 pairedAmount) 
     {
         require(amountIn > 0, "Amount must be greater than zero");
         require(totalLiquidity > 0, "Pool is empty, no ratio available");
 
         if (totalLiquidity == 0) {
-            return 0;
+            return 0; 
         }
 
         if (isA) {
@@ -151,16 +165,14 @@ contract StableSwapPool is Ownable {
 
 
 
-
-
-    function getReservesAndLiquidity() public view
-    returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_)
+    function getReservesAndLiquidity() public view 
+        returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_,uint256 priceCurrent_) 
     {
         reserveA_ = reserveA;
         reserveB_ = reserveB;
         totalLiquidity_ = totalLiquidity;
+        priceCurrent_ = priceCurrent;
     }
 
 
 }
-
