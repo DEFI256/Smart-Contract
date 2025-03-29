@@ -12,12 +12,22 @@ contract StableSwapPool is Ownable {
 
     uint256 public priceBefore;
     uint256 public priceAfter;
-    
+
     uint256 public reserveA;
     uint256 public reserveB;
     uint256 public totalLiquidity;
     uint256 public constant FEE_RATE = 25; // 0.25% 交易费
     uint256 public constant A = 100; // 放大系数 A
+
+    //监听事件
+    event SwapExecuted(
+        uint256 timestamp,
+        uint256 priceBefore,
+        uint256 priceAfter,
+        bool isAToB,
+        uint256 amountIn,
+        uint256 amountOut
+    );
 
     constructor(address _tokenA, address _tokenB, address _lpToken) Ownable(msg.sender) {
         tokenA = IERC20(_tokenA);
@@ -41,7 +51,7 @@ contract StableSwapPool is Ownable {
         }
 
         lpToken.mint(msg.sender, lpAmount);
-        
+
         reserveA += amountA;
         reserveB += amountB;
         totalLiquidity += lpAmount;
@@ -64,15 +74,15 @@ contract StableSwapPool is Ownable {
     }
 
     /** @dev 计算交易详情 */
-    function getSwapDetails(uint256 amountIn, bool isAToB) 
-        public 
-        returns (uint256 feeAmount, uint256 estimatedAmountOut, uint256 priceImpact) 
+    function getSwapDetails(uint256 amountIn, bool isAToB)
+    public
+    returns (uint256 feeAmount, uint256 estimatedAmountOut, uint256 priceImpact)
     {
         require(amountIn > 0, "Amount must be greater than zero");
 
         uint256 x = isAToB ? reserveA : reserveB;
         uint256 y = isAToB ? reserveB : reserveA;
-        
+
         // 计算手续费
         feeAmount = (amountIn * FEE_RATE) / 10000;
         uint256 amountAfterFee = amountIn - feeAmount;
@@ -114,19 +124,21 @@ contract StableSwapPool is Ownable {
         } else {
             reserveB += fee;
         }
+
+        emit SwapExecuted(block.timestamp,priceBefore,priceAfter, isAToB, amountIn, amountOut);
     }
 
     /** @dev 根据输入的代币数量计算对应的另一方代币数量以保持池子比例 */
-    function getPairedAmount(uint256 amountIn, bool isA) 
-        public 
-        view 
-        returns (uint256 pairedAmount) 
+    function getPairedAmount(uint256 amountIn, bool isA)
+    public
+    view
+    returns (uint256 pairedAmount)
     {
         require(amountIn > 0, "Amount must be greater than zero");
         require(totalLiquidity > 0, "Pool is empty, no ratio available");
-        
+
         if (totalLiquidity == 0) {
-            return 0; 
+            return 0;
         }
 
         if (isA) {
@@ -138,8 +150,11 @@ contract StableSwapPool is Ownable {
 
 
 
-    function getReservesAndLiquidity() public view 
-        returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_) 
+
+
+
+    function getReservesAndLiquidity() public view
+    returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_)
     {
         reserveA_ = reserveA;
         reserveB_ = reserveB;
@@ -148,3 +163,4 @@ contract StableSwapPool is Ownable {
 
 
 }
+
