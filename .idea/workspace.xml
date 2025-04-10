@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="2ac8f5ca-fd62-48bb-b47f-0fb0c9240569" name="Changes" comment="添加完成了A、B、ETH和Shit四种货币的池子">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/Eth.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/Shit.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Eth.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Eth_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Shit.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Shit_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Token_A.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Token_A_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Token_B.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/Token_B_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/build-info/454f43a49dd075f556fd16a52b538663.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/build-info/72a1ae1dabf27c795fcbec6fecd93343.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/build-info/81cb34011ea784972b8b92f02bb933fc.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Currencies/artifacts/build-info/f528d50893aa59994dd1b67629d3a595.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/AEthLPToken.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/AShitLPToken.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/BEthLPToken.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/BShitLPToken.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/EthShitLPToken.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/artifacts/EthShitLPToken.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/artifacts/EthShitLPToken_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/LPtoken/artifacts/build-info/2ce79d22c51f00517afe8ad77855b937.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/AEthSwap.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/AShitSwap.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/BEthSwap.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/BShitSwap.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/EthShitSwap.sol" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/artifacts/EthShitSwap.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/artifacts/EthShitSwap_metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/contracts/Swap/artifacts/build-info/e3f87ed774fe41a91d31fda962d272d1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/LPToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/LPtoken/LPToken.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/StableSwapPool.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Swap/StableSwapPool.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/Token_A.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Currencies/Token_A.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/Token_B.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Currencies/Token_B.sol" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="cwz4.10" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2vXDKp62XG66TdsTg2qvd9Jsr8L" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/PolyU/Decentralize Finance/Smart-Contract",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PolyU\Decentralize Finance\Smart-Contract\contracts\currencies" />
+      <recent name="D:\PolyU\Decentralize Finance\Smart-Contract\contracts\Swap" />
+      <recent name="D:\PolyU\Decentralize Finance\Smart-Contract\contracts\LPtoken" />
+      <recent name="D:\PolyU\Decentralize Finance\Smart-Contract\contracts" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2ac8f5ca-fd62-48bb-b47f-0fb0c9240569" name="Changes" comment="" />
+      <created>1744282463747</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744282463747</updated>
+      <workItem from="1744282465198" duration="4146000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="添加完成了A、B、ETH和Shit四种货币的池子" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加完成了A、B、ETH和Shit四种货币的池子" />
+  </component>
+</project>
