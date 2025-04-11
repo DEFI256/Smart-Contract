@@ -63,20 +63,20 @@ npx hardhat console --network ganache
 
 添加本地Ganache网络
 
-<img src="pic\1.png" alt="1" style="zoom: 80%;" />
+<img src="pic/1.png" alt="1" style="zoom: 80%;" />
 
 
 
-![3](pic\2.png)
+![3](pic/2.png)
 
 #### **4.2 添加账户 **
 
 复制密钥，添加测试账户
 
-![4](pic\4.png)
+![4](pic/4.png)
 
 #### **4.3 添加代币**
 
 输入代币部署地址即可添加代币
 
-![3](pic\3.png)
+![3](pic/3.png)
