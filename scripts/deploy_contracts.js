@@ -176,7 +176,7 @@ async function main() {
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deploying contracts with the account:", deployer.address);
 
-    const initialSupply = hre.ethers.parseUnits("1000", 18);
+    const initialSupply = hre.ethers.parseUnits("1000", 0);
 
     // 1. 部署代币
     const deployToken = async (name, symbol) => {
@@ -256,7 +256,7 @@ async function main() {
     }
 
     // 5. 授权并添加流动性
-    const liquidityAmount = hre.ethers.parseUnits("500", 18);
+    const liquidityAmount = hre.ethers.parseUnits("500", 0);
     for (let key in swapPools) {
         const [tokenA, tokenB] = key.split("_");
         await token_USDT.approve(swapPoolAddresses[key], initialSupply);
