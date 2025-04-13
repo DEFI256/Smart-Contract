@@ -291,7 +291,7 @@ async function main() {
 
     // console.log("All liquidity pools deployed and initialized.");
 
-    // new method
+    // new method 998,500,000 
     const approvetoken = hre.ethers.parseUnits("10000000", 18);
     const baseLiquidity = hre.ethers.parseUnits("500000", 18);
 
