@@ -756,7 +756,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/StableSwapPool.sol": "StableSwapPool"
+			"StableSwapPool.sol": "StableSwapPool"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -811,11 +811,11 @@
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/ERC20.sol": {
-			"keccak256": "0x6ef9389a2c07bc40d8a7ba48914724ab2c108fac391ce12314f01321813e6368",
+			"keccak256": "0x41f6b3b9e030561e7896dbef372b499cc8d418a80c3884a4d65a68f2fdc7493a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b7a5cb39b1e6df68f4dd9a5e76e853d745a74ffb3dfd7df4ae4d2ace6992a171",
-				"dweb:/ipfs/QmPbzKR19rdM8X3PLQjsmHRepUKhvoZnedSR63XyGtXZib"
+				"bzz-raw://80b0992a11b2fd1f75ced2971696d07bbd1d19ce6761dd50d8b6d48aa435f42a",
+				"dweb:/ipfs/QmZDe5xd2gXHjVEjv9t8C1KQ68K5T8qFwdinwQgmP3rF3x"
 			]
 		},
 		"@openzeppelin/contracts/token/ERC20/IERC20.sol": {
@@ -858,20 +858,20 @@
 				"dweb:/ipfs/QmfDRc7pxfaXB2Dh9np5Uf29Na3pQ7tafRS684wd3GLjVL"
 			]
 		},
-		"contracts/LPToken.sol": {
-			"keccak256": "0x06b0958a9de1d2a6c9d1228cf539ce149c053679a4c1da13ce87e2bc9ebae7e4",
+		"LPToken.sol": {
+			"keccak256": "0x236bca572219d576c9ec7638d9760b089a0e088655850d82ff55bd7b8a0d1f72",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b1fadfa74b22753d5f712f88db8e1bc5e46c2e95e70a6668be38bc185bb40dfa",
-				"dweb:/ipfs/QmWRhFKfEUEkaABep8MC4qjJB59HoARybvViksPXEGXLeS"
+				"bzz-raw://4489d13e744e57166ca5bb810cced682aad04370813d7442af06bd180d637756",
+				"dweb:/ipfs/QmQmCSDgxDjmmyVY7ihq248HHkbofViHZmsrBuM4rTWq7d"
 			]
 		},
-		"contracts/StableSwapPool.sol": {
-			"keccak256": "0x9791eeb8fbc0183ee26e4b9ff18f515615c7ed209edb77c8a943236733ac3b21",
+		"StableSwapPool.sol": {
+			"keccak256": "0xc9bf0e50b7a1b03602e9ccee2e5571cce7a5397c974255211850d0f1e3b1ab83",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://91e141546a073454bcb0dc6a8d23d5878a023621dbf5d75c0ea66dc8586c7a76",
-				"dweb:/ipfs/QmQndJZFnmQfRdKa6yqTGYdTdsf7Wts4C3h23rriHrja6t"
+				"bzz-raw://e4e1bf4c2987c9e1ee376191d36aa973dbde314579b4d8c8cd42d46f9622f75d",
+				"dweb:/ipfs/QmauCUoijBeRwrsVCZRzq3q66vhvvKx3WQEmqNG9GZ8CSq"
 			]
 		}
 	},

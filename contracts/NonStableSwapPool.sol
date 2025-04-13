@@ -20,7 +20,6 @@ contract NonStableSwapPool is Ownable {
     uint256 public reserveB;
     uint256 public totalLiquidity;
     uint256 public constant FEE_RATE = 25; // 0.25% 交易费
-    uint256 public amplificationCoefficient = 100; // 放大系数，初始值为 100，可动态调整
     bool public paused = false;
 
     // 事件定义
@@ -86,6 +85,18 @@ contract NonStableSwapPool is Ownable {
         lpToken = LPToken(_lpToken);
     }
 
+    // 新增：牛顿迭代法计算平方根
+    function sqrt(uint256 x) internal pure returns (uint256) {
+        if (x == 0) return 0;
+        uint256 z = (x + 1) / 2; // 初始猜测
+        uint256 y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2; // 牛顿迭代
+        }
+        return y;
+    }
+
     /**
      * @dev 计算交易详情，基于 AEthSwap 的 AMM 算法
      * 使用公式：new_y = (amplificationCoefficient * y * x) / (amplificationCoefficient * x + new_x)
@@ -107,8 +118,9 @@ contract NonStableSwapPool is Ownable {
         uint256 amountAfterFee = amountIn - feeAmount;
 
         // 计算估计的兑换数量
+        uint256 k = sqrt(x * y);
         uint256 new_x = x + amountAfterFee;
-        uint256 new_y = (amplificationCoefficient * y * x) / (amplificationCoefficient * x + new_x);
+        uint256 new_y = (k * k) / new_x;
         estimatedAmountOut = y - new_y;
 
         // 计算价格影响
@@ -366,14 +378,4 @@ contract NonStableSwapPool is Ownable {
         paused = false;
     }
 
-    /**
-     * @dev 更新放大系数
-     * 仅限所有者调用
-     */
-    function setAmplificationCoefficient(uint256 _newA) external onlyOwner {
-        require(_newA >= 1 && _newA <= 1000000, "Amplification coefficient out of range");
-        
-        emit AmplificationCoefficientUpdated(amplificationCoefficient, _newA);
-        amplificationCoefficient = _newA;
-    }
 }

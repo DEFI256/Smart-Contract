@@ -16,6 +16,11 @@
 						"internalType": "string",
 						"name": "symbol",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "initialSupply",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -266,24 +271,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					}
-				],
-				"name": "burn",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "decimals",
 				"outputs": [
@@ -342,33 +329,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "pool",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "renounceOwnership",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_pool",
-						"type": "address"
-					}
-				],
-				"name": "setPool",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -550,14 +511,8 @@
 				"balanceOf(address)": {
 					"details": "See {IERC20-balanceOf}."
 				},
-				"burn(address,uint256)": {
-					"details": "销毁 LP 代币（用户提取流动性时调用） "
-				},
 				"decimals()": {
 					"details": "Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the default value returned by this function, unless it's overridden. NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}."
-				},
-				"mint(address,uint256)": {
-					"details": "给流动性提供者铸造 LP 代币 "
 				},
 				"name()": {
 					"details": "Returns the name of the token."
@@ -567,9 +522,6 @@
 				},
 				"renounceOwnership()": {
 					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
-				},
-				"setPool(address)": {
-					"details": "绑定流动性池合约（只能设置一次） "
 				},
 				"symbol()": {
 					"details": "Returns the symbol of the token, usually a shorter version of the name."
@@ -597,7 +549,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"LPToken.sol": "LPToken"
+			"Token.sol": "Token"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -659,12 +611,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"LPToken.sol": {
-			"keccak256": "0x236bca572219d576c9ec7638d9760b089a0e088655850d82ff55bd7b8a0d1f72",
+		"Token.sol": {
+			"keccak256": "0x6514be6858be604d041c2bbe1145191f0677cc4dbaef70cabae577270092ea70",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4489d13e744e57166ca5bb810cced682aad04370813d7442af06bd180d637756",
-				"dweb:/ipfs/QmQmCSDgxDjmmyVY7ihq248HHkbofViHZmsrBuM4rTWq7d"
+				"bzz-raw://9d9db066eba09a5ffa6f2fc59c2e2860a75a6f0d05f5672453f518f3a1dccf14",
+				"dweb:/ipfs/QmcUuitGJFAhFvmgoRAYG5wQoWY9YK1S1eDRd5jfhYUhbN"
 			]
 		}
 	},

@@ -31,6 +31,7 @@ nvm install
 
 ```
 ganache-cli --db ./ganache-data --mnemonic "labor security egg caught skull labor coyote tennis avoid annual glove rookie"
+
 ```
 
 
@@ -41,6 +42,14 @@ ganache-cli --db ./ganache-data --mnemonic "labor security egg caught skull labo
 
 ```
 npx hardhat run scripts/deploy_contracts.js --network ganache
+
+
+#测试
+npx hardhat run scripts/test.js --network ganache
+
+#单独部署池子
+npx hardhat run scripts/deploy_pools.js --network ganache
+
 ```
 
 合约地址保存在
