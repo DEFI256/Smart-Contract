@@ -22,7 +22,7 @@ contract NonStableSwapPool is Ownable {
     uint256 public constant FEE_RATE = 25; // 0.25% 交易费
     bool public paused = false;
 
-    // 事件定义
+    // 事件定义（保持不变）
     event LiquidityAdded(
         address indexed provider, 
         uint256 amountA, 
@@ -75,7 +75,6 @@ contract NonStableSwapPool is Ownable {
         _;
     }
 
-    // 构造函数
     constructor(address _tokenA, address _tokenB, address _lpToken) Ownable(msg.sender) {
         require(_tokenA != address(0), "Token A cannot be zero address");
         require(_tokenB != address(0), "Token B cannot be zero address");
@@ -85,21 +84,20 @@ contract NonStableSwapPool is Ownable {
         lpToken = LPToken(_lpToken);
     }
 
-    // 新增：牛顿迭代法计算平方根
+    // 牛顿迭代法计算平方根（保持不变）
     function sqrt(uint256 x) internal pure returns (uint256) {
         if (x == 0) return 0;
-        uint256 z = (x + 1) / 2; // 初始猜测
+        uint256 z = (x + 1) / 2;
         uint256 y = x;
         while (z < y) {
             y = z;
-            z = (x / z + z) / 2; // 牛顿迭代
+            z = (x / z + z) / 2;
         }
         return y;
     }
 
     /**
-     * @dev 计算交易详情，基于 AEthSwap 的 AMM 算法
-     * 使用公式：new_y = (amplificationCoefficient * y * x) / (amplificationCoefficient * x + new_x)
+     * @dev 计算交易详情，基于新公式 x^(1/2) * y = k
      */
     function getSwapDetails(uint256 amountIn, bool isAToB) 
         public 
@@ -118,14 +116,34 @@ contract NonStableSwapPool is Ownable {
         uint256 amountAfterFee = amountIn - feeAmount;
 
         // 计算估计的兑换数量
-        uint256 k = sqrt(x * y);
-        uint256 new_x = x + amountAfterFee;
-        uint256 new_y = (k * k) / new_x;
-        estimatedAmountOut = y - new_y;
+        if (isAToB) {
+            // A 换 B：x * y^2 = k
+            uint256 k = x * y * y; // x * y^2
+            uint256 new_x = x + amountAfterFee;
+            uint256 new_y = sqrt(k / new_x); // new_y^2 = k / new_x
+            estimatedAmountOut = y - new_y;
+        } else {
+            // B 换 A：y * x^2 = k（对调 x 和 y）
+            uint256 k = y * x * x; // y * x^2
+            uint256 new_x = x + amountAfterFee;
+            uint256 new_y = k /(new_x * new_x); // new_x^2 = k / new_y
+            estimatedAmountOut = y - new_y;
+        }
 
         // 计算价格影响
-        uint256 priceBefore = (y * PRECISION) / x; // 交易前的价格
-        uint256 priceAfter = (new_y * PRECISION) / new_x; // 交易后的价格
+        uint256 priceBefore;
+        uint256 priceAfter;
+        if (isAToB) {
+            priceBefore = (y * PRECISION) / x; // B/A
+            uint256 new_x = x + amountAfterFee;
+            uint256 new_y = sqrt((x * y * y) / new_x);
+            priceAfter = (new_y * PRECISION) / new_x;
+        } else {
+            priceBefore = (y * PRECISION)/x ; // A/B
+            uint256 new_x = x + amountAfterFee;
+            uint256 new_y = (y * x * x) / (new_x*new_x);
+            priceAfter = (new_y * PRECISION) / new_x;
+        }
         
         // 避免负数价格影响
         if (priceAfter >= priceBefore) {
@@ -136,8 +154,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /** 
-     * @dev 添加流动性
-     * 包含滑点保护，基于池子比例分配 LP 代币
+     * @dev 添加流动性（保持不变，但更新价格逻辑）
      */
     function addLiquidity(
         uint256 amountA, 
@@ -151,49 +168,28 @@ contract NonStableSwapPool is Ownable {
         uint256 _reserveB = reserveB;
         uint256 _totalLiquidity = totalLiquidity;
         
-        // 计算 LP 代币数量和更新状态变量
         if (_totalLiquidity == 0) {
-            // 首次添加流动性
             lpAmount = (amountA + amountB) / 2;
-            
-            // 更新状态变量
             reserveA = amountA;
             reserveB = amountB;
             totalLiquidity = lpAmount;
-            
-            // 更新价格
-            if (amountB > 0) {
-                priceCurrent = (amountA * PRECISION) / amountB;
-            }
+            priceCurrent = (amountA * PRECISION) / amountB;
         } else {
-            // 已有流动性，检查比例
             uint256 expectedAmountB = (amountA * _reserveB) / _reserveA;
-            uint256 allowedDeviation = expectedAmountB / 100; // 1% 误差
-            
+            uint256 allowedDeviation = expectedAmountB / 100;
             require(
                 amountB >= expectedAmountB - allowedDeviation && 
                 amountB <= expectedAmountB + allowedDeviation,
                 "Token ratio does not match pool ratio"
             );
-            
-            // 按比例分配 LP 代币
             lpAmount = (amountA * _totalLiquidity) / _reserveA;
-            
-            // 更新状态变量
             reserveA = _reserveA + amountA;
             reserveB = _reserveB + amountB;
             totalLiquidity = _totalLiquidity + lpAmount;
-            
-            // 更新价格
-            if (reserveB > 0) {
-                priceCurrent = (reserveA * PRECISION) / reserveB;
-            }
+            priceCurrent = (reserveA * PRECISION) / reserveB;
         }
         
-        // 滑点保护
         require(lpAmount >= minLpAmount, "LP amount below minimum");
-        
-        // 执行转账和铸造
         tokenA.safeTransferFrom(msg.sender, address(this), amountA);
         tokenB.safeTransferFrom(msg.sender, address(this), amountB);
         lpToken.mint(msg.sender, lpAmount);
@@ -202,7 +198,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /** 
-     * @dev 移除部分或全部流动性
+     * @dev 移除流动性（保持不变，但更新价格逻辑）
      */
     function removeLiquidity(
         uint256 lpAmount, 
@@ -210,39 +206,27 @@ contract NonStableSwapPool is Ownable {
         uint256 minAmountB
     ) external nonReentrant whenNotPaused {
         uint256 userLpBalance = lpToken.balanceOf(msg.sender);
-        
-        // 如果 lpAmount 为 0，移除全部流动性
         if (lpAmount == 0) {
             lpAmount = userLpBalance;
         }
-        
         require(lpAmount > 0 && lpAmount <= userLpBalance, "Invalid LP amount");
         
         uint256 _reserveA = reserveA;
         uint256 _reserveB = reserveB;
         uint256 _totalLiquidity = totalLiquidity;
         
-        // 计算用户可提取的代币数量
         uint256 amountA = (_reserveA * lpAmount) / _totalLiquidity;
         uint256 amountB = (_reserveB * lpAmount) / _totalLiquidity;
         
-        // 滑点保护
         require(amountA >= minAmountA, "TokenA amount below minimum");
         require(amountB >= minAmountB, "TokenB amount below minimum");
         
-        // 更新池子状态
         reserveA = _reserveA - amountA;
         reserveB = _reserveB - amountB;
         totalLiquidity = _totalLiquidity - lpAmount;
         
-        // 更新价格
-        if (reserveB > 0) {
-            priceCurrent = (reserveA * PRECISION) / reserveB;
-        } else {
-            priceCurrent = 0;
-        }
+        priceCurrent = reserveB > 0 ? (reserveA * PRECISION) / reserveB : 0;
         
-        // 燃烧 LP 代币并转移代币
         lpToken.burn(msg.sender, lpAmount);
         tokenA.safeTransfer(msg.sender, amountA);
         tokenB.safeTransfer(msg.sender, amountB);
@@ -251,8 +235,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /** 
-     * @dev 兑换代币，支持滑点保护
-     * 使用 AEthSwap 的 AMM 算法
+     * @dev 兑换代币，基于 x * y^2 = k
      */
     function swap(uint256 amountIn, bool isAToB, uint256 minAmountOut) 
         external 
@@ -264,49 +247,28 @@ contract NonStableSwapPool is Ownable {
         uint256 _reserveA = reserveA;
         uint256 _reserveB = reserveB;
         
-        // 计算输出金额
         (uint256 feeAmount, uint256 amountOutFinal, uint256 priceImpact) = getSwapDetails(amountIn, isAToB);
         
-        // 滑点保护
         require(amountOutFinal >= minAmountOut, "Slippage exceeded");
         
-        // 更新状态变量并执行转账
         if (isAToB) {
             require(_reserveB >= amountOutFinal, "Insufficient liquidity for B");
-            
-            // 更新储备
             reserveA = _reserveA + amountIn;
             reserveB = _reserveB - amountOutFinal;
-            
-            // 手续费留在池子里
-            reserveA = reserveA + feeAmount;
-            
-            // 执行转账
+            reserveA = reserveA + feeAmount; // 手续费归池子
             tokenA.safeTransferFrom(msg.sender, address(this), amountIn);
             tokenB.safeTransfer(msg.sender, amountOutFinal);
         } else {
             require(_reserveA >= amountOutFinal, "Insufficient liquidity for A");
-            
-            // 更新储备
             reserveB = _reserveB + amountIn;
             reserveA = _reserveA - amountOutFinal;
-            
-            // 手续费留在池子里
-            reserveA = reserveA + feeAmount;
-            
-            // 执行转账
+            reserveB = reserveB + feeAmount; // 手续费归池子
             tokenB.safeTransferFrom(msg.sender, address(this), amountIn);
             tokenA.safeTransfer(msg.sender, amountOutFinal);
         }
 
-        // 更新价格
-        if (reserveB > 0) {
-            priceCurrent = (reserveA * PRECISION) / reserveB;
-        } else {
-            priceCurrent = 0;
-        }
+        priceCurrent = reserveB > 0 ? (reserveA * PRECISION) / reserveB : 0;
 
-        // 发出事件
         emit SwapExecuted(
             block.timestamp, 
             priceCurrent, 
@@ -327,7 +289,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /** 
-     * @dev 根据输入的代币数量计算对应的另一方代币数量以保持池子比例
+     * @dev 获取另一方代币数量（保持不变）
      */
     function getPairedAmount(uint256 amountIn, bool isA) 
         public 
@@ -345,7 +307,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /**
-     * @dev 获取池子的基本信息
+     * @dev 获取池子信息（保持不变）
      */
     function getReservesAndLiquidity() public view 
         returns (uint256 reserveA_, uint256 reserveB_, uint256 totalLiquidity_, uint256 priceCurrent_) 
@@ -357,7 +319,7 @@ contract NonStableSwapPool is Ownable {
     }
 
     /**
-     * @dev 应急提款功能，仅限管理员
+     * @dev 应急提款（保持不变）
      */
     function emergencyWithdraw(address token, uint256 amount) external onlyOwner {
         require(paused, "Contract must be paused first");
@@ -365,17 +327,13 @@ contract NonStableSwapPool is Ownable {
     }
 
     /**
-     * @dev 暂停合约
+     * @dev 暂停和恢复（保持不变）
      */
     function pause() external onlyOwner {
         paused = true;
     }
 
-    /**
-     * @dev 恢复合约运行
-     */
     function unpause() external onlyOwner {
         paused = false;
     }
-
 }
